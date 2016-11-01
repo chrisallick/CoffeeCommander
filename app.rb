@@ -27,14 +27,13 @@ get '/coffee/status/' do
 end
 
 get '/coffee/toggle/' do
-    status = $redis.get("coffee_status")
-    if status == "0"
-        status = "1"
-    else
-        status = "0"
+    if params[:status].to_s
+        status = $redis.get("coffee_status").to_s
+        
+        if status != params[:status]
+            $redis.set("coffee_status", params[:status])
+        end
     end
-    
-    $redis.set("coffee_status", status)
 
     return "state: #{$redis.get("coffee_status")}"
 end
